@@ -2,7 +2,9 @@ import { useEffect, useState, useRef} from "react"
 import scrambleGenerator from "./scrambleGenerator"
 import SessionTable from "./SessionTable"
 import formatTime from "./formatTime"
-import formatSolve from "./formatSolve"
+//import formatSolve from "./formatSolve"
+import EditSolveModal from "./EditSolveModal"
+
 
 export type Solve = {
     id: number
@@ -46,16 +48,30 @@ function Timer() {
                     clearInterval(liveTimeDisplayRef.current)
                     finalTimeRef.current = Date.now() - startRef.current
                     setLiveTime(finalTimeRef.current)
+                    const newSolveId = Date.now()
                     
                     setIsActive(false)
                     setignoreNextRelease(true)
                     setScramble(scrambleGenerator())
                     setScoreTable(prevTable => [...prevTable, {
-                        id: Date.now(),
+                        id: newSolveId,
                         time: finalTimeRef.current,
                         scramble: scramble,
                         penalty: 'none'
-                    }])
+                    }]) 
+                    fetch("http://127.0.0.1:8000/api/solves", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: newSolveId,
+                            time: finalTimeRef.current,
+                            scramble: scramble,
+                            penalty: 'none'
+                            
+                        })
+                    })
                 }
         }
         document.addEventListener('keydown', handleKeyDown)
@@ -111,66 +127,11 @@ function Timer() {
 
 
             {selectedSolve && (
-                <div 
-                onClick={()=> setSelectedSolve(null)} 
-                className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center"
-                >
-                    <div 
-                    onClick={(e) => e.stopPropagation()}
-                    className="bg-zinc-800 border border-zinc-700 rounded-xl shadow-2xl p-6 w-full max-w-sm"
-                    >
-                        <h2 className="flex justify-center text-xl">Edit solve</h2>
-                        <div className="flex justify-center text-xl font-semibold mt-3">
-                            {formatSolve(selectedSolve)}
-                        </div>
-                        <div className="flex justify-center gap-4 mt-4">
-                            <button 
-                                className="rounded-lg h-9 w-11 hover:bg-zinc-600"
-                                onClick={()=> {
-                                    setScoreTable(prevTable => prevTable.map(solve => {
-                                        if (selectedSolve.id === solve.id) {
-                                        return {...solve, penalty: 'none'}
-                                        }
-                                        return solve
-                                    }))
-                                    setSelectedSolve(null)
-                                }}
-                            >OK</button>
-                            <button
-                                className="rounded-lg h-9 w-11 hover:bg-zinc-600"
-                                onClick={()=> {
-                                    setScoreTable(prevTable => prevTable.map(solve => {
-                                        if (selectedSolve.id === solve.id) {
-                                            return {...solve, penalty: '+2'}
-                                        }
-                                        return solve
-                                    }))
-                                    setSelectedSolve(null)
-                                    }}
-                            >+2</button>
-                            <button
-                                className="rounded-lg h-9 w-11 hover:bg-zinc-600"
-                                onClick={()=> {
-                                    setScoreTable(prevTable => prevTable.map(solve => {
-                                        if (selectedSolve.id === solve.id) {
-                                            return {...solve, penalty: 'DNF'}
-                                        }
-                                        return solve
-                                    }))
-                                    setSelectedSolve(null)
-                                    }}
-                            >dnf</button>
-                            <button 
-                            className="rounded-lg h-9 w-9 bg-zinc-700 hover:bg-gray-500"
-                            onClick={()=> {
-                                setScoreTable(prevTable => prevTable.filter(solve => solve.id !== selectedSolve.id))
-                                setSelectedSolve(null)
-                            }}
-                            >X</button>
-                        </div>
-                        <p className="text-sm text-center text-zinc-400 mt-4">{selectedSolve.scramble}</p>
-                    </div>
-                </div>
+                <EditSolveModal
+                    onClose = {() => setSelectedSolve(null)}
+                    setScoreTable = {setScoreTable} 
+                    selectedSolve = {selectedSolve}
+                />
             )}
         </div>
     )
