@@ -128,9 +128,9 @@ function Timer() {
 
             {selectedSolve && (
                 <EditSolveModal
-                    onClose = {() => setSelectedSolve(null)}
-                    setScoreTable = {setScoreTable} 
-                    selectedSolve = {selectedSolve}
+                onClose = {() => setSelectedSolve(null)}
+                setScoreTable = {setScoreTable}
+                selectedSolve = {selectedSolve}
                 />
             )}
         </div>
