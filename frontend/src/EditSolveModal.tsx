@@ -12,7 +12,7 @@ type EditSolveModalProps = {
 export default function EditSolveModal({onClose, selectedSolve, setScoreTable}: EditSolveModalProps) {
     const penaltyOptions: ('none' | '+2' | 'DNF')[] = ['none', '+2', 'DNF'];
 
-    const handlePenalty = (penaltyType: 'none' | '+2' | 'DNF') => {
+    const handlePenalty = async (penaltyType: 'none' | '+2' | 'DNF') => {
         setScoreTable(prevTable => prevTable.map(solve => {
             if (selectedSolve.id === solve.id) {
                 return { ...solve, penalty: penaltyType };
@@ -20,6 +20,21 @@ export default function EditSolveModal({onClose, selectedSolve, setScoreTable}: 
             return solve;
         }));
         onClose();
+
+        try {
+            await fetch(`http://127.0.0.1:8000/api/solves/${selectedSolve.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    penalty: penaltyType
+                })
+
+            })
+        } catch(error) {
+            console.log("Server not responding: ", error)
+        }
     }
 
     return (
