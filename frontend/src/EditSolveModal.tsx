@@ -64,9 +64,20 @@ export default function EditSolveModal({onClose, selectedSolve, setScoreTable}: 
                     })}
                     <button 
                         className="rounded-lg h-9 w-9 bg-zinc-700 hover:bg-gray-500"
-                        onClick={()=> {
+                        onClick={async ()=> {
                             setScoreTable(prevTable => prevTable.filter(solve => solve.id !== selectedSolve.id))
                             onClose()
+
+                            try{
+                                await fetch(`http://127.0.0.1:8000/api/solves/${selectedSolve.id}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                })
+                            } catch(error) {
+                                console.log("Server not responding: ", error)
+                            }
                         }}
                     >
                         X
