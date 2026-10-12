@@ -1,6 +1,30 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import os
+import psycopg2
+from dotenv import load_dotenv
+
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+def get_db_connection():
+    conn = psycopg2.connect(DATABASE_URL)
+    return conn
+try:
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT version();")
+    db_version = cursor.fetchone()
+
+    print(f"Połączono z bazą neon. Wersja: {db_version[0]}")
+
+    cursor.close()
+    conn.close()
+except Exception as e:
+    print("Błąd połączenia z BD: ", e)
+
 
 solves = []
 
