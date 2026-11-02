@@ -33,7 +33,7 @@ export default function EditSolveModal({onClose, selectedSolve, setScoreTable}: 
 
             })
         } catch(error) {
-            console.log("Server not responding: ", error)
+            console.error("Server not responding: ", error)
         }
     }
 
@@ -71,12 +71,9 @@ export default function EditSolveModal({onClose, selectedSolve, setScoreTable}: 
                             try{
                                 await fetch(`http://127.0.0.1:8000/api/solves/${selectedSolve.id}`, {
                                     method: 'DELETE',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    }
                                 })
                             } catch(error) {
-                                console.log("Server not responding: ", error)
+                                console.error("Server not responding: ", error)
                             }
                         }}
                     >

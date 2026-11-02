@@ -2,7 +2,6 @@ import { useEffect, useState, useRef} from "react"
 import scrambleGenerator from "./scrambleGenerator"
 import SessionTable from "./SessionTable"
 import formatTime from "./formatTime"
-//import formatSolve from "./formatSolve"
 import EditSolveModal from "./EditSolveModal"
 
 
@@ -19,16 +18,18 @@ function Timer() {
     const [liveTime, setLiveTime] = useState(0)
     const [scramble, setScramble] = useState(scrambleGenerator())
     const [selectedSolve, setSelectedSolve] = useState<Solve | null>(null)
-    const [scoreTable, setScoreTable] = useState<Solve[]>(() => {
-        const saved = localStorage.getItem('cubing_session')
-        if(saved) return JSON.parse(saved)
-        return []
-    })
+    const [scoreTable, setScoreTable] = useState<Solve[]>([])
 
     const startRef = useRef(0)
     const liveTimeDisplayRef = useRef(0)
     const finalTimeRef = useRef(0)
     
+    useEffect(() => {
+        fetch("http://127.0.0.1:8000/api/solves")
+        .then(response => response.json())
+        .then(data => setScoreTable(data))
+        .catch(error => console.error("Connection error: ", error))
+    }, [])
 
     useEffect(() => {
         const handleKeyUp = (e: KeyboardEvent) => {
@@ -95,22 +96,9 @@ function Timer() {
         }
     }, [isActive])
 
-    useEffect(() => {
-        localStorage.setItem('cubing_session', JSON.stringify(scoreTable))
-    }, [scoreTable])
-
-
     return (
         <div className="h-screen overflow-hidden bg-zinc-900 text-zinc-100 flex flex-col md:flex-row">
             <div className="w-full md:w-80 lg:w-96 bg-zinc-800/50 p-6 flex flex-col gap-6 border-l border-zinc-800">
-                <button 
-                onClick={(e) => {
-                        e.currentTarget.blur()
-                        setScoreTable([])
-                    }
-                } 
-                className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold transition-colors duration-200 shadow-lg shadow-indigo-500/20"
-                >Reset the Table</button>
                 <div className="flex-1 overflow-y-auto pr-2">
                     <SessionTable times={scoreTable} onTimeClick={setSelectedSolve}/>
                 </div>
