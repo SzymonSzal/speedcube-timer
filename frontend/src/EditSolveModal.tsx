@@ -1,6 +1,7 @@
 import type { Solve } from "./Timer";
 import formatSolve from "./formatSolve";
 import React from "react";
+import { API_URL } from "./api"
 
 type EditSolveModalProps = {
     onClose: () => void
@@ -22,7 +23,7 @@ export default function EditSolveModal({onClose, selectedSolve, setScoreTable}: 
         onClose();
 
         try {
-            await fetch(`http://127.0.0.1:8000/api/solves/${selectedSolve.id}`, {
+            await fetch(`http://${API_URL}/api/solves/${selectedSolve.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -69,7 +70,7 @@ export default function EditSolveModal({onClose, selectedSolve, setScoreTable}: 
                             onClose()
 
                             try{
-                                await fetch(`http://127.0.0.1:8000/api/solves/${selectedSolve.id}`, {
+                                await fetch(`http://${API_URL}/api/solves/${selectedSolve.id}`, {
                                     method: 'DELETE',
                                 })
                             } catch(error) {

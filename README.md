@@ -8,3 +8,6 @@ A simple Rubik's cube timer.
 * React (Vite)
 * TypeScript
 * Tailwind CSS
+* Python & FastAPI
+* PostgreSQL (Neon)
+* Vercel — frontend and backend hosting

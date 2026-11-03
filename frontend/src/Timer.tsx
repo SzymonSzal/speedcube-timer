@@ -3,6 +3,7 @@ import scrambleGenerator from "./scrambleGenerator"
 import SessionTable from "./SessionTable"
 import formatTime from "./formatTime"
 import EditSolveModal from "./EditSolveModal"
+import { API_URL } from "./api"
 
 
 export type Solve = {
@@ -25,7 +26,7 @@ function Timer() {
     const finalTimeRef = useRef(0)
     
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/solves")
+        fetch(`http://${API_URL}/api/solves`)
         .then(response => response.json())
         .then(data => setScoreTable(data))
         .catch(error => console.error("Connection error: ", error))
@@ -64,7 +65,7 @@ function Timer() {
                     scramble: scramble,
                     penalty: 'none'
                 }]) 
-                fetch("http://127.0.0.1:8000/api/solves", {
+                fetch(`http://${API_URL}/api/solves`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
