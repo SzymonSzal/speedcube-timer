@@ -23,7 +23,7 @@ export default function EditSolveModal({onClose, selectedSolve, setScoreTable}: 
         onClose();
 
         try {
-            await fetch(`http://${API_URL}/api/solves/${selectedSolve.id}`, {
+            await fetch(`${API_URL}/api/solves/${selectedSolve.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -70,7 +70,7 @@ export default function EditSolveModal({onClose, selectedSolve, setScoreTable}: 
                             onClose()
 
                             try{
-                                await fetch(`http://${API_URL}/api/solves/${selectedSolve.id}`, {
+                                await fetch(`${API_URL}/api/solves/${selectedSolve.id}`, {
                                     method: 'DELETE',
                                 })
                             } catch(error) {

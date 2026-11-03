@@ -26,7 +26,7 @@ function Timer() {
     const finalTimeRef = useRef(0)
     
     useEffect(() => {
-        fetch(`http://${API_URL}/api/solves`)
+        fetch(`${API_URL}/api/solves`)
         .then(response => response.json())
         .then(data => setScoreTable(data))
         .catch(error => console.error("Connection error: ", error))
@@ -65,7 +65,7 @@ function Timer() {
                     scramble: scramble,
                     penalty: 'none'
                 }]) 
-                fetch(`http://${API_URL}/api/solves`, {
+                fetch(`${API_URL}/api/solves`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
