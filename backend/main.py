@@ -26,13 +26,18 @@ except Exception as e:
     print(f"Database connection error: {e}")
 
 
-solves = []
-
 app = FastAPI()
+
+@app.get("/api/health")
+def health():
+    return {"status": "ok"}
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://speedcube-timer-delta.vercel.app",
+        "http://localhost:5173"
+        ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

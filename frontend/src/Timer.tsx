@@ -44,36 +44,40 @@ function Timer() {
             
         }
 
-        const handleKeyDown = () => {
-                if (isActive){
-                    clearInterval(liveTimeDisplayRef.current)
-                    finalTimeRef.current = Date.now() - startRef.current
-                    setLiveTime(finalTimeRef.current)
-                    const newSolveId = Date.now()
-                    
-                    setIsActive(false)
-                    setignoreNextRelease(true)
-                    setScramble(scrambleGenerator())
-                    setScoreTable(prevTable => [...prevTable, {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.code === 'Space') {
+                e.preventDefault()
+            }
+            
+            if (isActive){
+                clearInterval(liveTimeDisplayRef.current)
+                finalTimeRef.current = Date.now() - startRef.current
+                setLiveTime(finalTimeRef.current)
+                const newSolveId = Date.now()
+                
+                setIsActive(false)
+                setignoreNextRelease(true)
+                setScramble(scrambleGenerator())
+                setScoreTable(prevTable => [...prevTable, {
+                    id: newSolveId,
+                    time: finalTimeRef.current,
+                    scramble: scramble,
+                    penalty: 'none'
+                }]) 
+                fetch("http://127.0.0.1:8000/api/solves", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
                         id: newSolveId,
                         time: finalTimeRef.current,
                         scramble: scramble,
                         penalty: 'none'
-                    }]) 
-                    fetch("http://127.0.0.1:8000/api/solves", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            id: newSolveId,
-                            time: finalTimeRef.current,
-                            scramble: scramble,
-                            penalty: 'none'
-                            
-                        })
+                        
                     })
-                }
+                })
+            }
         }
         document.addEventListener('keydown', handleKeyDown)
         document.addEventListener('keyup', handleKeyUp)
